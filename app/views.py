@@ -4,11 +4,14 @@ Jinja2 Documentation:    http://jinja.pocoo.org/2/documentation/
 Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
-
-from app import app
-from flask import render_template, request, redirect, url_for
-
-
+import os
+import time
+from app import app, db
+from flask import render_template, request, redirect, url_for, flash, session, abort, jsonify
+from werkzeug.utils import secure_filename
+from forms import RegisterForm
+from model import UserProfile
+counter = 620000000
 ###
 # Routing for your application.
 ###
@@ -19,11 +22,60 @@ def home():
     return render_template('home.html')
 
 
+@app.route('/profile', methods=['POST','GET'])
+def profile():
+    form = RegisterForm()
+    if request.method == 'POST' and form.validate_on_submit():
+        User_Fname = request.form['FirstName']
+        User_Lname = request.form['LastName']
+        User_Age = request.form['Age']
+        User_Gender = request.form['Gender']
+        User_Bio = request.form['Bio']
+         
+        file_folder = app.config['UPLOAD_FOLDER']
+        file = request.files['file']
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(file_folder, filename))
+        ID = makeId()
+        date = timeinfo()
+        return redirect('home.html')
+        
+        
+    else:
+        flash('All fields are required')
+        return render_template('user.html', form = form)
+ 
+  
+def timeinfo():
+    current = time.strftime('%c')
+    month = str(current[4:8])
+    date = str(current[8:10])
+    year = str(current[-4:])
+    
+    date_format = date + " " + month+ " " + year
+    
+    return date_format
+  
+      
+       
+def makeId():
+   global counter
+   counter +=1
+   return counter
+ 
+
+
+@app.route('/profiles')
+def Userlist():
+    
+    
+    
+    return render_template('userlist.html')
+ 
 @app.route('/about/')
 def about():
     """Render the website's about page."""
-    return render_template('about.html', name="Mary Jane")
-
+    return render_template('about.html', name="Mary Jane")    
 
 ###
 # The functions below should be applicable to all Flask apps.

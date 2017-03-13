@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+<h1> Profile Info </h1> <hr>
+
+  <p> Please fill out profile information below.</p>
+  
+<form action="{{url_for('profile')}}" method = "POST" enctype="multipart/form-data">
+       <div>
+            {{ form.csrf_token }}
+            
+            {{form.firstname.label}}
+            {{ form.firstname(class='form-control')}}
+           
+            {{form.lastname.label}}
+            {{ form.lastname(class='form-control')}}
+           
+            {{form.age.label}}
+            {{ form.age(class='form-control')}}
+            
+            {{form.gender.label}}
+            {{ form.gender}}
+            <P></P>
+            {{form.bio.label}}
+            {{ form.bio(class='form-control')}}
+           
+       </div>
+          
+  <div class="form-group">
+    
+    <label for="file">Upload your image file</label>
+    <input type="file" name="file" class="form-control" />
+  </div>
+  <button type="submit" name="submit" class="btn btn-primary">Submit</button>
+</form>
+
+
+
+{% endblock %}
