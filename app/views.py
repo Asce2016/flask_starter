@@ -25,19 +25,22 @@ def home():
 @app.route('/profile', methods=['POST','GET'])
 def profile():
     form = RegisterForm()
-    if request.method == 'POST' and form.validate_on_submit():
-        User_Fname = request.form['FirstName']
-        User_Lname = request.form['LastName']
-        User_Age = request.form['Age']
-        User_Gender = request.form['Gender']
-        User_Bio = request.form['Bio']
-         
+    if request.method == 'POST':
+        User_Fname = request.form['firstname']
+        User_Lname = request.form['lastname']
+        User_Age = request.form['age']
+        User_Gender = request.form['gender']
+        User_Bio = request.form['bio']
+        User_name = request.form['username']
         file_folder = app.config['UPLOAD_FOLDER']
         file = request.files['file']
         filename = secure_filename(file.filename)
         file.save(os.path.join(file_folder, filename))
         ID = makeId()
         date = timeinfo()
+        user = UserProfile(User_name, User_Fname, User_Lname, User_Age, User_Gender, User_Bio, date)
+        db.session.add(user)
+        db.session.commit()
         return redirect('home.html')
         
         
